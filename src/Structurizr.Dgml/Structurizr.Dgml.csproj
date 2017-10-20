@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0;net45</TargetFrameworks>
+    <AssemblyName>OpenSoftware.Structurizr.Dgml</AssemblyName>
+    <RootNamespace>OpenSoftware.Structurizr.Dgml</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Merijn de Jonge</Authors>
+    <Company>OpenSoftware</Company>
+    <Description>Structurizr.Dgml is a library for converting Structurizr's C4 models to corresponding Dgml graphs.</Description>
+    <PackageProjectUrl>https://github.com/merijndejonge/Structurizr.Dgml</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/merijndejonge/Structurizr.Dgml.git</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/merijndejonge/Structurizr.Dgml/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Merijn de Jonge</Copyright>
+    <PackageTags>structurizr architecture dgml visualization</PackageTags>
+    <Version>1.0</Version>
+    <FileVersion>1.1.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenSoftware.DgmlBuilder" Version="1.4.0" />
+    <PackageReference Include="Structurizr.Core" Version="0.6.0" />
+  </ItemGroup>
+
+</Project>

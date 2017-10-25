@@ -4,14 +4,23 @@ using Structurizr;
 
 namespace OpenSoftware.Structurizr.Dgml
 {
-    public static class StructurizrExtensions
+    internal static class StructurizrExtensions
     {
+        /// <summary>
+        /// Extension method that returns a list of tags of Taggable object.
+        /// </summary>
+        /// <param name="taggable"></param>
+        /// <returns></returns>
+        internal static IList<string> GetTags(this Taggable taggable)
+        {
+            return taggable.Tags.Split(',');
+        }
         /// <summary>
         /// Extension method that merges a collection of element styles into a single element style.
         /// </summary>
         /// <param name="matchingStyles"></param>
         /// <returns></returns>
-        public  static ElementStyle Join(this IEnumerable<ElementStyle> matchingStyles)
+        internal static ElementStyle Join(this IEnumerable<ElementStyle> matchingStyles)
         {
             var style = new ElementStyle("joinedStyle");
             foreach (var matchingStyle in matchingStyles.Reverse())
@@ -26,13 +35,12 @@ namespace OpenSoftware.Structurizr.Dgml
             }
             return style;
         }
-
         /// <summary>
-        /// Method that checks if an element is a Structurizr container
+        /// Extension method that checks if an element is a Structurizr container
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public static bool IsContainer(this Element element)
+        internal static bool IsContainer(this Element element)
         {
             switch (element)
             {

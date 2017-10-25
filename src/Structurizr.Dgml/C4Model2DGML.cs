@@ -9,6 +9,20 @@ namespace OpenSoftware.Structurizr.Dgml
 {
     public static class C4Model2Dgml
     {
+        /// <summary>
+        /// Max length of a label strings
+        /// </summary>
+        private const int MaxLabelLength = 20;
+        /// <summary>
+        /// Url to shape pictures
+        /// </summary>
+        private const string ShapesUri =
+            @"https://raw.githubusercontent.com/merijndejonge/Structurizr.Dgml/master/src/Structurizr.Dgml/Shapes";
+        /// <summary>
+        /// Extension method that converts a Structurizr C4 model to DGML.
+        /// </summary>
+        /// <param name="workspace"></param>
+        /// <returns></returns>
         public static DirectedGraph ToDgml(this Workspace workspace)
         {
 
@@ -16,30 +30,21 @@ namespace OpenSoftware.Structurizr.Dgml
             {
                 NodeBuilders = new NodeBuilder[]
                 {
-                    new NodeBuilder<ElementView>(MakeNode)
+                    new NodeBuilder<ElementView>(CreateNode)
                 },
                 LinkBuilders = new LinkBuilder[]
                 {
-                    new LinkBuilder<RelationshipView>(
-                        x =>
-                            new Link
-                            {
-                                Source = x.Relationship.SourceId,
-                                Target = x.Relationship.DestinationId,
-                                Description = x.Relationship.Description
-                            }
-                    )
+                    new LinkBuilder<RelationshipView>(CreateLink)
                 },
                 CategoryBuilders = new CategoryBuilder[]
                 {
-                    new CategoryBuilder<ElementView>(BuildCategory)
+                    new CategoryBuilder<ElementView>(CreateCategory)
                 },
                 StyleBuilders = new List<StyleBuilder>
                 {
-                    new StyleBuilder<Node>(x => CreateStyleForNode(workspace, x))
+                    new StyleBuilder<Node>(x => CreateStyleForNode(workspace, x)),
                 }
             };
-
             var contextElements = workspace.Views.SystemContextViews.SelectMany(x => x.Elements).Distinct().ToArray();
             var contextLinks = workspace.Views.SystemContextViews.SelectMany(x => x.Relationships).Distinct().ToArray();
             var containerElements = workspace.Views.ContainerViews.SelectMany(x => x.Elements).Distinct().ToArray();
@@ -54,10 +59,57 @@ namespace OpenSoftware.Structurizr.Dgml
                 containerLinks,
                 componentElements,
                 componentLinks);
-
             return graph;
         }
-
+        private static Node CreateNode(ElementView elementView)
+        {
+            var element = elementView.Element;
+            var labels = element.GetTags();
+            var categoryRefs = labels.Select(x => new CategoryRef { Ref = x }).ToList();
+            if (element.Parent != null)
+            {
+                categoryRefs.Insert(0, new CategoryRef
+                {
+                    Ref = element.Parent.Id
+                });
+            }
+            categoryRefs.Reverse();
+            return new Node
+            {
+                Id = element.Id,
+                Group = element.IsContainer() ? "Expanded" : null,
+                Label = element.Name,
+                Description = string.IsNullOrEmpty(element.Description) ? null : element.Description,
+                Reference = element.Url,
+                Category = categoryRefs.Select(x => x.Ref).FirstOrDefault(),
+                CategoryRefs = categoryRefs
+            };
+        }
+        private static Link CreateLink(RelationshipView relationship)
+        {
+            var link = new Link
+            {
+                Source = relationship.Relationship.SourceId,
+                Target = relationship.Relationship.DestinationId,
+            };
+            if (string.IsNullOrWhiteSpace(relationship.Relationship.Description) == false)
+            {
+                link.Description = relationship.Description;
+                link.Label = MakeLabel(relationship.Description);
+            }
+            return link;
+        }
+        private static Category CreateCategory(ElementView elementView)
+        {
+            var element = elementView.Element;
+            if (element.Parent == null) return null;
+            return new Category { Id = element.Parent.Id, Label = element.Parent.Name };
+        }
+        private static string MakeLabel(string relationshipDescription)
+        {
+            if (relationshipDescription.Length < MaxLabelLength) return relationshipDescription;
+            return relationshipDescription.Substring(0, MaxLabelLength - 3) + "...";
+        }
         private static Style CreateStyleForNode(Workspace workspace, Node node)
         {
             if (node.Category == null) return null;
@@ -77,43 +129,36 @@ namespace OpenSoftware.Structurizr.Dgml
             var matchingStyles = styles.Elements.Where(x => categories.Any(tag => x.Tag == tag));
             var style = matchingStyles.Join();
 
+            return Element2DgmlStyle(categories[0], style);
+        }
+        private static Style Element2DgmlStyle(string label, ElementStyle style)
+        {
             return new Style
             {
-                GroupLabel = categories[0],
-                Setter = new List<Setter> {new Setter {Property = "Background", Value = style?.Background ?? "White"}}
-            };
-        }
-
-
-        private static Category BuildCategory(ElementView elementView)
-        {
-            var element = elementView.Element;
-            if (element.Parent == null) return null;
-            return new Category {Id = element.Parent.Id, Label = element.Parent.Name};
-        }
-
-        private static Node MakeNode(ElementView elementView)
-        {
-            var element = elementView.Element;
-            var labels = element.getRequiredTags();
-            labels.Reverse();
-            var categoryRefs = labels.Select(x => new CategoryRef {Ref = x}).ToList();
-            if (element.Parent != null)
-            {
-                categoryRefs.Insert(0, new CategoryRef
+                TargetType = "Node",
+                GroupLabel = label,
+                Condition = new List<Condition>
                 {
-                    Ref = element.Parent.Id
-                });
-            }
-
-            return new Node
-            {
-                Id = element.Id,
-                Group = element.IsContainer() ? "Expanded" : null,
-                Label = element.Name,
-                Category = categoryRefs.Select(x => x.Ref).FirstOrDefault(),
-                CategoryRefs = categoryRefs
+                    new Condition{Expression = $"HasCategory('{label}')"}
+                },
+                Setter = StyleElements2Dgml(style).ToList()
             };
+        }
+        private static IEnumerable<Setter> StyleElements2Dgml(ElementStyle style)
+        {
+            if (style.Color != null)
+            {
+                yield return new Setter {Property = "Foreground", Value = style.Color};
+            }
+            if (style.Background != null)
+            {
+                yield return new Setter { Property = "Background", Value = style.Background };
+            }
+            if (style.Shape != Shape.Box)
+            {
+                yield return new Setter { Property = "Shape", Value = "None" };
+                yield return new Setter { Property = "Icon", Value =  $"{ShapesUri}/{style.Shape.ToString()}.png"};
+            }
         }
     }
 }

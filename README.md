@@ -6,7 +6,12 @@ Structurizr.Dgml is a small `DotNet` library for converting Structurizr's C4 mod
 Checkout the following for more information:
 * https://structurizr.com/
 * https://github.com/merijndejonge/DgmlBuilder
+## Example
+Below is an example that shows how the Contoso University example has been converted to DGML:
+![Contoso university converted to DGML](./images/ContosoUniversity.png)
+In the Visual Studio DGML viewer you can collapse different elements of the model to focus on different aspect of the model:
 
+![Partly collapsed version of Contoso university converted to DGML](./images/ContosoUniversity-collapsed.png) 
 ##  Using Structurizr.Dgml
 Given an C4 model in a `Structurizr.Workspace` instance, you can simply convert the model to Dgml with the extention method `ToDgml()`. I.e.,
 ```csharp

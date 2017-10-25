@@ -94,8 +94,8 @@ namespace OpenSoftware.Structurizr.Dgml
             };
             if (string.IsNullOrWhiteSpace(relationship.Relationship.Description) == false)
             {
-                link.Description = relationship.Description;
-                link.Label = MakeLabel(relationship.Description);
+                link.Description = relationship.Relationship.Description;
+                link.Label = MakeLabel(relationship.Relationship.Description);
             }
             return link;
         }

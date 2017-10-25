@@ -9,6 +9,7 @@ Checkout the following for more information:
 ## Example
 Below is an example that shows how the Contoso University example has been converted to DGML:
 ![Contoso university converted to DGML](./images/ContosoUniversity.png)
+
 In the Visual Studio DGML viewer you can collapse different elements of the model to focus on different aspect of the model:
 
 ![Partly collapsed version of Contoso university converted to DGML](./images/ContosoUniversity-collapsed.png) 

@@ -35,11 +35,7 @@ namespace MyC4Model
             // Convert to DGML
             var dgml = workspace.ToDgml();
             // Write to file
-            using (var writer = new StreamWriter("c4model.dgml"))
-            {
-                var serializer = new XmlSerializer(typeof(DirectedGraph));
-                serializer.Serialize(writer, dgml);
-            }
+            dgml.WriteToFile("c4model.dgml");
         }
     }
 }

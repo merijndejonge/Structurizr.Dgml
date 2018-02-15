@@ -14,7 +14,7 @@
     <PackageLicenseUrl>https://github.com/merijndejonge/Structurizr.Dgml/blob/master/LICENSE</PackageLicenseUrl>
     <Copyright>Merijn de Jonge</Copyright>
     <PackageTags>structurizr architecture DGMLvisualization</PackageTags>
-    <Version>1.2</Version>
+    <Version>1.2.1</Version>
     <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 

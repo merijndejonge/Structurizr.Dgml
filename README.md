@@ -16,9 +16,6 @@ In the Visual Studio DGML viewer you can collapse different elements of the mode
 ##  Using Structurizr.Dgml
 Given an C4 model in a `Structurizr.Workspace` instance, you can simply convert the model to Dgml with the extention method `ToDgml()`. I.e.,
 ```csharp
-using System;
-using System.IO;
-using System.Xml.Serialization;
 using OpenSoftware.DgmlTools.Model;
 using OpenSoftware.Structurizr.Dgml;
 using Structurizr;

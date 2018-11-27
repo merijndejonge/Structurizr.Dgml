@@ -7,13 +7,13 @@ namespace OpenSoftware.Structurizr.Dgml
     internal static class StructurizrExtensions
     {
         /// <summary>
-        /// Extension method that returns a list of tags of Taggable object.
+        /// Extension method that returns a list of tags of ModelItem object.
         /// </summary>
-        /// <param name="taggable"></param>
+        /// <param name="modelItem"></param>
         /// <returns></returns>
-        internal static IList<string> GetTags(this Taggable taggable)
+        internal static IList<string> GetTags(this ModelItem modelItem)
         {
-            return taggable.Tags.Split(',');
+            return modelItem.Tags.Split(',');
         }
         /// <summary>
         /// Extension method that merges a collection of element styles into a single element style.
